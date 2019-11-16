@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Repofinder</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>Repo Search</h1>
+
+        <!-- Rendered Buttons will get Dumped Here  -->
+        <div id="buttons-view"></div>
+
+        <form id="repo-form">
+            <button id="button">Search</button>
+            <label for="repo-input">Search For Repos By Project Name</label>
+            <input type="text" id="repo-input">
+            <br>
+
+            <!-- Button triggers new movie to be added -->
+            <input id="add-repo" type="submit" value="Add a Movie, Yo!">
+        </form>
+
+        <!-- Movies will Get Dumped Here -->
+        <div id="Repo-view"></div>
+    </div>
+
+    <!-- Retrieved data will be dumped here -->
+    <div class="total_count"></div>
+    <div class="name"></div>
+    <div class="lastPx"></div>
+    <div class="mktcap"></div>
+    <div id="firstchart" style="width:100%; height:400px;"></div>
+
+    <script type="text/javascript">
+        // var projkey = $("#repo-input");
+        var baseURL = "https://api.github.com/search/repositories?q=";
+
+        const repos = [];
+        const logins = [];
+        const scores = [];
+        const create = [];
+        const update = [];
+        const sizes = [];
+        const langs = [];
+        const homes = [];
+
+
+        $("#button").on("click", function (event) {
+            event.preventDefault();
+
+            // This line grabs the input from the textbox
+            var projkey = $("#repo-input").val().trim();
+            var gitURL = baseURL + projkey + "&sort=stars&order=desc";
+            repos.push(projkey);
+            getRepos(gitURL);
+        });
+
+        function getRepos(gitURL) {
+            $.ajax({
+                url: gitURL,
+                method: "GET"
+            }).then(function (response) {
+
+                var iLeng = response.items.length;
+                var itms = response.items;
+
+                $(".total_count").text("# Repos: " + response.total_count);
+                for (i = 0; i < iLeng; i++) {
+                    logins.push(itms[i].owner.login);
+                    scores.push(itms[i].score);
+                    create.push(itms[i].created_at);
+                    update.push(itms[i].updated_at);
+                    sizes.push(itms[i].size);
+                    langs.push(itms[i].language);
+                    homes.push(itms[i].homepage);
+                }
+                console.log('login: ' + logins[10],
+                    'score: ' + scores[10],
+                    'Created At: ' + create[10],
+                    'Updated At: ' + update[10],
+                    'Size: ' + sizes[10],
+                    'Language: ' + langs[10],
+                    'Homepage: ' + homes[10]);
+
+            });
+        };
+
+        
+
+
+    </script>
+
+</body>
+
+</html>
